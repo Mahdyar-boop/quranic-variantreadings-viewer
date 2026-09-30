@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quranic Variant Readings Viewer | Academic Corpus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-color: #fcfbfa;
-      --card-bg: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.95);
       --text-main: #1a1a1a;
-      --text-muted: #665c54;
-      --border-color: #e2ddd5;
+      --text-muted: #555555;
+      --border-color: #dcd6cd;
       --accent-color: #2c3e50;
-      --hover-bg: #f4f0eb;
     }
 
     * {
@@ -22,85 +22,106 @@
     }
 
     body {
-      /* استفاده از فونت‌های استاندارد، خوانا و امن سیستم بدون نیاز به اینترنت یا فونت خارجی */
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Vazirmatn", "Tahoma", sans-serif;
-      background-color: var(--bg-color);
+      font-family: 'Source Sans 3', system-ui, -apple-system, sans-serif;
       color: var(--text-main);
-      line-height: 1.6;
-      padding: 2.5rem 1rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      
+      /* تنظیم تصویر پس‌زمینه با پسوند jfif و لایه پوششی تاریک برای خوانایی عالی متن */
+      background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.65)), url('main-image.jfif') no-repeat center center fixed;
+      background-size: cover;
+      padding: 3rem 1.5rem;
     }
 
     .container {
-      max-width: 850px;
+      max-width: 900px;
+      width: 100%;
       margin: 0 auto;
     }
 
+    /* هدر کاملاً وسط‌چین با فونت درشت و کلاسیک */
     header {
-      margin-bottom: 2.5rem;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 1.5rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      color: #ffffff;
+      padding: 0 1rem;
     }
 
     h1 {
-      font-size: 2.2rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
       font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.01em;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
 
     .subtitle {
-      color: var(--text-muted);
-      font-size: 1.05rem;
+      font-size: 1.15rem;
+      color: #e2dfdb;
+      font-weight: 400;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
     }
 
+    .subtitle code {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: #fff;
+    }
+
+    /* باکس اصلی با افکت شیشه‌ای و پس‌زمینه نیمه‌شفاف */
     .explorer-box {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 2rem;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+      border-radius: 12px;
+      padding: 2.5rem;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
     }
 
     .search-input {
       width: 100%;
-      padding: 12px 16px;
-      font-size: 1rem;
+      padding: 14px 18px;
+      font-size: 1.05rem;
       border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border-radius: 8px;
       margin-bottom: 1.5rem;
       outline: none;
       font-family: inherit;
+      background: #ffffff;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     .search-input:focus {
       border-color: var(--accent-color);
-      box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.08);
+      box-shadow: 0 0 0 4px rgba(44, 62, 80, 0.12);
     }
 
     .results-list {
-      max-height: 550px;
+      max-height: 520px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      padding-right: 4px;
+      padding-right: 6px;
     }
 
     .data-card {
-      background: var(--bg-color);
-      border: 1px solid var(--border-color);
+      background: #fbf9f6;
+      border: 1px solid #e6dfd5;
       border-left: 4px solid var(--accent-color);
       padding: 1.25rem;
-      border-radius: 6px;
+      border-radius: 8px;
       transition: transform 0.15s ease, background 0.15s ease;
     }
 
     .data-card:hover {
-      background: var(--card-bg);
-      transform: translateY(-1px);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      background: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     .card-meta {
@@ -123,14 +144,16 @@
       padding: 3rem;
       color: var(--text-muted);
       font-style: italic;
+      font-size: 1.1rem;
     }
 
     footer {
       text-align: center;
       margin-top: 3rem;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      border-top: 1px solid var(--border-color);
+      font-size: 0.9rem;
+      color: #e2dfdb;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
       padding-top: 1.5rem;
     }
   </style>
@@ -140,7 +163,7 @@
   <div class="container">
     <header>
       <h1>Quranic Variant Readings</h1>
-      <p class="subtitle">Digital Explorer for <code style="background:#f4f0eb; padding:2px 6px; border-radius:4px;">readers.xml</code> dataset.</p>
+      <p class="subtitle">Digital Explorer for <code style="background:rgba(255,255,255,0.2); padding:2px 6px; border-radius:4px;">readers.xml</code> dataset</p>
     </header>
 
     <div class="explorer-box">
