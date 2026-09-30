@@ -3,59 +3,79 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mahdyar Shirazifarashah — Research Fellow | XML Corpus Explorer</title>
+<title>Mahdyar Shirazifarashah — Research Fellow | Corpus Explorer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=7">
+<link rel="stylesheet" href="assets/style.css?v=8">
 <style>
-  /* استایل‌های اختصاصی برای بخش لیست کردن داده‌های XML */
-  .corpus-explorer {
-    margin-top: 2rem;
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 2rem;
+  /* استایل‌های اختصاصی و تمیز برای بخش کورپوس و سرچ */
+  .corpus-section {
+    background: #f9f8f6;
+    padding: 4rem 0;
+    border-top: 1px solid var(--border, #e5e0d8);
+    border-bottom: 1px solid var(--border, #e5e0d8);
   }
-  .search-box {
+  .corpus-box {
+    background: #fff;
+    border: 1px solid var(--border, #e5e0d8);
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  }
+  .search-input {
     width: 100%;
-    padding: 12px 16px;
-    font-size: 1rem;
-    border: 1px solid var(--border);
-    border-radius: 4px;
+    padding: 14px 18px;
+    font-size: 1.05rem;
+    border: 1px solid var(--border, #ccc);
+    border-radius: 6px;
     margin-bottom: 1.5rem;
     font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
   }
-  .xml-list {
-    max-height: 500px;
+  .search-input:focus {
+    border-color: #333;
+  }
+  .variants-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    max-height: 550px;
     overflow-y: auto;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    border-top: 1px solid var(--border);
+    padding-right: 5px;
   }
-  .xml-item {
-    padding: 1rem;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.2s;
+  .variant-card {
+    background: #faf9f6;
+    border: 1px solid #eee;
+    border-left: 4px solid #4a5568;
+    padding: 1.25rem;
+    border-radius: 4px;
+    transition: transform 0.15s ease;
   }
-  .xml-item:hover {
-    background: var(--cream);
+  .variant-card:hover {
+    transform: translateY(-2px);
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
-  .xml-meta {
-    font-size: 0.85rem;
+  .variant-tag {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     color: #666;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.4rem;
     font-weight: 600;
   }
-  .xml-text {
+  .variant-content {
     font-size: 1.05rem;
-    color: #111;
+    color: #1a202c;
+    line-height: 1.5;
   }
-  .loading-state, .error-state {
+  .status-msg {
     text-align: center;
     padding: 3rem;
     color: #666;
     font-style: italic;
+    font-size: 1.1rem;
   }
 </style>
 </head>
@@ -68,12 +88,6 @@
     <nav>
       <ul>
         <li><a href="about.html">About</a></li>
-        <li class="nav-dropdown" tabindex="0">
-          <a href="javascript:void(0)">CV</a>
-          <ul class="dropdown-menu">
-            <li><a href="assets/CV.pdf" target="_blank" rel="noopener">Full CV</a></li>
-          </ul>
-        </li>
         <li><a href="#corpus">Corpus & Data</a></li>
         <li><a href="contact.html">Contact</a></li>
       </ul>
@@ -87,200 +101,137 @@
       <div class="hero-feature">
         <div class="intro-textbox">
           <p>
-            I am a Research Fellow at the <a href="https://www.rug.nl/staff/m.shirazifarashah/" target="_blank" rel="noopener">University of Groningen</a> and a doctoral candidate. My academic work centers on philology, manuscript traditions, textual criticism, and digital humanities—combining rigorous textual analysis with computational TEI/XML encoding frameworks.
+            Research Fellow at the <a href="https://www.rug.nl/staff/m.shirazifarashah/" target="_blank" rel="noopener">University of Groningen</a>. Specializing in philology, manuscript traditions, and digital humanities.
           </p>
         </div>
       </div>
   </div>
 </section>
 
-<section class="section">
-  <div class="wrap two-col">
-    <div>
-      <div class="section-kicker">About Me</div>
-        <p class="lede">
-          Welcome to my digital academic portfolio. My research bridges traditional philology with modern digital scholarly editing and manuscript transmission studies.
-        </p>
-        <p>
-          Based in Groningen, Netherlands, I am actively engaged in developing digital archives, studying early textual variants, and applying advanced computational methods to historical corpora.
-        </p>
-      <a href="about.html">Read more about my background →</a>
-    </div>
-    <div>
-      <img class="person-photo" src="assets/capture-variant.JPG" alt="Mahdyar Shirazifarashah" onerror="this.style.display='none'">
-    </div>
-  </div>
-</section>
-
-<!-- بخش پژوهش‌ها -->
-<section class="section" style="background:var(--cream); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+<!-- بخش اختصاصی نمایش و جستجوی واریانت‌ها -->
+<section class="corpus-section" id="corpus">
   <div class="wrap">
-    <div class="section-kicker">Expertise & Focus</div>
-    <h2>Research Interests</h2>
-    <div class="card-grid" style="margin-top: 24px;">
-        <div class="card" style="padding: 24px; background: #fff;">
-          <h3>Philology & Textual Criticism</h3>
-          <p>Investigating manuscript traditions, variants, and historical text transmission.</p>
-        </div>
-        <div class="card" style="padding: 24px; background: #fff;">
-          <h3>Digital Humanities</h3>
-          <p>Utilizing TEI/XML encoding, digital archiving, and computational methods for textual analysis.</p>
-        </div>
-        <div class="card" style="padding: 24px; background: #fff;">
-          <h3>Arabic & Islamic Studies</h3>
-          <p>Examining early textual variants, classical texts, and manuscript culture.</p>
-        </div>
-    </div>
-  </div>
-</section>
-
-<!-- بخش هوشمند نمایش و جستجوی فایل XML -->
-<section class="section" id="corpus">
-  <div class="wrap">
-    <div class="section-kicker">Digital Edition & Dataset</div>
+    <div class="section-kicker">Digital Scholarly Edition</div>
     <h2>Corpus Coranicum Variants Explorer</h2>
-    <p>Interactive rendering of the encoded TEI/XML research dataset (<code style="background:#eee; padding:2px 6px;">all-variants-from-corpus-coranicum.xml</code>):</p>
+    <p style="margin-bottom: 1.5rem; color: #555;">
+      Exploring textual variants encoded from <code style="background:#eee; padding:2px 6px; border-radius:4px;">all-variants-from-corpus-coranicum.xml</code>.
+    </p>
     
-    <div class="corpus-explorer">
-      <input type="text" id="xmlSearch" class="search-box" placeholder="Search variants, texts, or identifiers...">
+    <div class="corpus-box">
+      <input type="text" id="liveSearch" class="search-input" placeholder="Type to search variants (e.g., surah, text, or variant type)...">
       
-      <div id="xmlContainer">
-        <div class="loading-state">Loading and parsing XML dataset...</div>
+      <div id="resultsContainer">
+        <div class="status-msg">Loading XML corpus dataset...</div>
       </div>
     </div>
-
-    <div style="margin-top: 1.5rem; text-align: right;">
-      <a href="data/all-variants-from-corpus-coranicum.xml" target="_blank" rel="noopener" class="btn" style="font-size: 0.9rem; text-decoration: underline;">📥 Download Raw XML File</a>
-    </div>
   </div>
 </section>
 
-<footer class="site-footer">
-    <div class="wrap">© 2026 Mahdyar Shirazifarashah · <a href="contact.html">Contact</a></div>
+<footer class="site-footer" style="padding: 3rem 0; text-align: center; border-top: 1px solid var(--border);">
+    <div class="wrap">© 2026 Mahdyar Shirazifarashah</div>
 </footer>
 
-<!-- اسکریپت جاوااسکریپت برای خواندن، پارس کردن و لیست کردن داده‌های XML به صورت پویا -->
 <script>
 (function(){
-  // اسکریپت پس‌زمینه هیرو
-  var backgrounds = ['assets/hero-map.jpg', 'assets/hero-arabic-doc.jpg', 'assets/hero-french-doc.jpg'];
-  var hero = document.getElementById('hero');
-  if(hero) {
-    var order = backgrounds.slice();
-    for(var i = order.length - 1; i > 0; i--){
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = order[i]; order[i] = order[j]; order[j] = tmp;
-    }
-    var layerA = document.createElement('div');
-    var layerB = document.createElement('div');
-    layerA.className = 'hero-bg-layer';
-    layerB.className = 'hero-bg-layer';
-    hero.insertBefore(layerB, hero.firstChild);
-    hero.insertBefore(layerA, hero.firstChild);
-    var layers = [layerA, layerB];
-    var active = 0, idx = 0;       
-    function showNext(){
-      var src = order[idx % order.length];
-      idx++;
-      var img = new Image();
-      img.onload = function(){
-        var next = (active + 1) % 2;
-        var layer = layers[next];
-        layer.style.backgroundImage = "url('" + src + "')";
-        layer.classList.remove('zooming');
-        void layer.offsetWidth; 
-        layer.classList.add('active', 'zooming');
-        layers[active].classList.remove('active');
-        active = next;
-        hero.classList.add('has-photo');
-      };
-      img.src = src;
-    }
-    showNext();
-    setInterval(showNext, 3000);
-  }
-
-  // بخش پردازش و نمایش XML
-  const xmlPath = 'data/all-variants-from-corpus-coranicum.xml';
-  const container = document.getElementById('xmlContainer');
-  const searchInput = document.getElementById('xmlSearch');
+  const xmlUrl = 'data/all-variants-from-corpus-coranicum.xml';
+  const container = document.getElementById('resultsContainer');
+  const searchInput = document.getElementById('liveSearch');
   
-  let allEntries = [];
+  let parsedEntries = [];
 
-  fetch(xmlPath)
+  // دریافت و خواندن فایل XML
+  fetch(xmlUrl)
     .then(response => {
-      if (!response.ok) throw new Error('Network response was not ok');
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       return response.text();
     })
-    .then(data => {
+    .then(xmlString => {
       const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(data, "application/xml");
+      const xmlDoc = parser.parseFromString(xmlString, "application/xml");
       
-      // بسته به ساختار دقیق فایل XML شما، تگ‌های اصلی (مثل item، variant، entry، یا سطرها) را پیدا می‌کنیم
-      // در اینجا ما انعطاف‌پذیر نوشتیم تا تگ‌هایی مثل item یا هر تگ حاوی متن را استخراج کند
-      let nodes = xmlDoc.getElementsByTagName('item');
-      if (nodes.length === 0) {
-        nodes = xmlDoc.getElementsByTagName('entry');
-      }
-      if (nodes.length === 0) {
-        // اگر تگ خاصی نبود، تمام تگ‌های فرزند سطح اول یا متن‌ها را می‌گیریم
-        nodes = xmlDoc.getElementsByTagName('*');
+      // بررسی خطای پارس XML
+      const parserError = xmlDoc.querySelector("parsererror");
+      if (parserError) {
+        throw new Error("XML Parsing failed: " + parserError.textContent);
       }
 
-      allEntries = [];
-      for (let i = 0; i < nodes.length; i++) {
-        let textContent = nodes[i].textContent.trim();
-        if (textContent.length > 0 && textContent.length < 500) { // فیلتر کردن متن‌های معتبر
-          allEntries.push({
-            tag: nodes[i].nodeName,
-            text: textContent
+      // استخراج تگ‌ها (ابتدا تگ‌های متداول مثل item، entry، یا rdg را بررسی می‌کنیم)
+      let elements = xmlDoc.getElementsByTagName('item');
+      if (elements.length === 0) elements = xmlDoc.getElementsByTagName('entry');
+      if (elements.length === 0) elements = xmlDoc.getElementsByTagName('rdg');
+      if (elements.length === 0) elements = xmlDoc.getElementsByTagName('*'); // همه تگ‌ها اگر مورد خاصی نبود
+
+      parsedEntries = [];
+      for (let i = 0; i < elements.length; i++) {
+        let text = elements[i].textContent.trim();
+        let tagName = elements[i].nodeName;
+        // فیلتر کردن گره‌های خالی یا خیلی بزرگ
+        if (text.length > 0 && text.length < 600 && tagName !== 'parsererror' && tagName !== 'html') {
+          parsedEntries.push({
+            tag: tagName,
+            text: text
           });
         }
       }
 
-      renderList(allEntries);
+      if (parsedEntries.length === 0) {
+        container.innerHTML = `<div class="status-msg">File loaded, but no valid entries were found inside the XML structure. <a href="${xmlUrl}" target="_blank">Check raw file</a></div>`;
+        return;
+      }
 
-      // قابلیت جستجوی زنده در داده‌های XML
+      renderVariants(parsedEntries);
+
+      // پیاده‌سازی سرچ زنده
       searchInput.addEventListener('input', function(e) {
-        const query = e.target.value.toLowerCase();
-        const filtered = allEntries.filter(item => item.text.toLowerCase().includes(query) || item.tag.toLowerCase().includes(query));
-        renderList(filtered);
+        const query = e.target.value.toLowerCase().trim();
+        if (!query) {
+          renderVariants(parsedEntries);
+          return;
+        }
+        const filtered = parsedEntries.filter(item => 
+          item.text.toLowerCase().includes(query) || item.tag.toLowerCase().includes(query)
+        );
+        renderVariants(filtered);
       });
 
     })
-    .catch(error => {
-      console.error('Error loading XML:', error);
-      container.innerHTML = `<div class="error-state">Could not load or parse the XML file automatically. Make sure the file exists in <code style="background:#eee; padding:2px 4px;">data/all-variants-from-corpus-coranicum.xml</code>.<br><a href="${xmlPath}" target="_blank">Click here to open the raw file directly.</a></div>`;
+    .catch(err => {
+      console.error(err);
+      container.innerHTML = `
+        <div class="status-msg" style="color: #b91c1c;">
+          <strong>Error loading dataset:</strong> Could not read the XML file.<br>
+          Please ensure <code style="background:#fee2e2; padding:2px 6px;">data/all-variants-from-corpus-coranicum.xml</code> exists in your repository.<br><br>
+          <a href="${xmlUrl}" target="_blank" style="color: #2563eb; text-decoration: underline;">Click here to test opening the XML file directly in browser</a>
+        </div>`;
     });
 
-  function renderList(items) {
+  function renderVariants(items) {
     if (items.length === 0) {
-      container.innerHTML = '<div class="loading-state">No matching records found in the XML dataset.</div>';
+      container.innerHTML = '<div class="status-msg">No matching records found.</div>';
       return;
     }
 
-    let html = '<ul class="xml-list">';
-    // برای جلوگیری از سنگین شدن صفحه، حداکثر ۱۰۰ آیتم اول را نمایش می‌دهیم
-    const limit = Math.min(items.length, 100);
+    let html = '<div class="variants-grid">';
+    // نمایش حداکثر ۱۵۰ مورد برای حفظ سرعت عالی صفحه
+    const limit = Math.min(items.length, 150);
     for (let i = 0; i < limit; i++) {
       html += `
-        <li class="xml-item">
-          <div class="xml-meta">Element: &lt;${items[i].tag}&gt;</div>
-          <div class="xml-text">${escapeHtml(items[i].text)}</div>
-        </li>
+        <div class="variant-card">
+          <div class="variant-tag">Element: &lt;${items[i].tag}&gt;</div>
+          <div class="variant-content">${escapeHtml(items[i].text)}</div>
+        </div>
       `;
     }
-    html += '</ul>';
-    if (items.length > 100) {
-      html += `<div style="padding: 10px; text-align: center; font-size: 0.85rem; color: #666;">Showing first 100 results of ${items.length} total entries. Use search box to filter.</div>`;
+    html += '</div>';
+    if (items.length > 150) {
+      html += `<div style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: #666;">Showing first 150 of ${items.length} records. Refine your search to find specific items.</div>`;
     }
     container.innerHTML = html;
   }
 
-  function escapeHtml(text) {
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  function escapeHtml(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
-
 })();
 </script>
 
